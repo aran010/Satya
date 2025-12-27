@@ -5,7 +5,6 @@ requests
 python-dotenv
 google-generativeai
 gTTS
-opencv-python-headless
 numpy
 pillow
-# Removed heavy ML libs (torch, transformers) to fit Vercel 250MB limit
+# Removed opencv and heavy ML libs to strictly fit Vercel 250MB limit
