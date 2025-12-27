@@ -1,0 +1,25 @@
+services:
+  # Python Backend
+  - type: web
+    name: satya-backend
+    runtime: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: GEMINI_API_KEY
+        sync: false # User will input this in dashboard
+
+  # Frontend (Optional here, easier on Vercel)
+  # - type: web
+  #   name: satya-frontend
+  #   runtime: node
+  #   buildCommand: npm install && npm run build
+  #   startCommand: npm start
+  #   envVars:
+  #     - key: NEXT_PUBLIC_API_URL
+  #       fromService:
+  #         type: web
+  #         name: satya-backend
+  #         property: url

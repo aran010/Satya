@@ -28,7 +28,8 @@ export default function Home() {
     setIsAnalyzing(true);
     setResult(null);
     try {
-      const response = await fetch("http://localhost:8000/analyze", {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const response = await fetch(`${API_URL}/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: query }),
@@ -78,7 +79,8 @@ export default function Home() {
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const response = await fetch("http://localhost:8000/chat-audio", {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const response = await fetch(`${API_URL}/chat-audio`, {
         method: "POST",
         body: formData,
       });
@@ -115,7 +117,8 @@ export default function Home() {
     setIsAnalyzing(true);
     setLogicResult(null);
     try {
-      const response = await fetch("http://localhost:8000/chat-constitutional", {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const response = await fetch(`${API_URL}/chat-constitutional`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: logicQuery }),
@@ -399,7 +402,8 @@ function DeepfakeUploader() {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await fetch("http://localhost:8000/detect-deepfake", {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const response = await fetch(`${API_URL}/detect-deepfake`, {
         method: "POST",
         body: formData,
       });

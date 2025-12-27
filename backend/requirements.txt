@@ -4,6 +4,11 @@ pydantic
 torch
 transformers
 shap
-# google-trans-new  # for translation if Bhashini not available, but we use placeholders
 requests
 python-dotenv
+google-generativeai
+gTTS
+opencv-python-headless
+facenet-pytorch
+numpy
+pillow
