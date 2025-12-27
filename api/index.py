@@ -13,7 +13,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 import google.generativeai as genai
 from dotenv import load_dotenv
-from deepfake_detection import DeepfakeDetector
+from .deepfake_detection import DeepfakeDetector
 import shutil
 
 load_dotenv() # Load environment variables from .env file
@@ -120,9 +120,13 @@ try:
 except Exception as e:
     print(f"Failed to load DeepfakeDetector: {e}")
 
-@app.get("/")
+@app.get("/api")
 def read_root():
-    return {"message": "Bhartiya-Election AI Backend (Gemini Powered) is running"}
+    return {"message": "Bhartiya-Election AI Backend (Vercel Serverless) is running"}
+
+@app.get("/")
+def read_root_slash():
+    return {"message": "Bhartiya-Election AI Backend is running"}
 
 @app.post("/analyze", response_model=AnalyzeResponse)
 async def analyze_rumor(request: AnalyzeRequest):
