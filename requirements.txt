@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+pydantic
+torch
+transformers
+shap
+requests
+python-dotenv
+google-generativeai
+gTTS
+opencv-python-headless
+facenet-pytorch
+numpy
+pillow
