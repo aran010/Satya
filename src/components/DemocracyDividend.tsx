@@ -48,8 +48,8 @@ export function DemocracyDividend() {
                         key={tab.id}
                         onClick={() => setActiveSection(tab.id as any)}
                         className={`flex items-center gap-2 px-4 py-2 rounded-full font-semibold transition-all ${activeSection === tab.id
-                                ? "bg-primary text-primary-foreground shadow-md"
-                                : "bg-muted text-muted-foreground hover:bg-muted/80"
+                            ? "bg-primary text-primary-foreground shadow-md"
+                            : "bg-muted text-muted-foreground hover:bg-muted/80"
                             }`}
                     >
                         {tab.icon}
@@ -227,45 +227,97 @@ function BudgetBuilder() {
 // --- 3. Cost Scale ---
 
 function CostScale() {
+    const [years, setYears] = useState(1);
+    const upfrontCost = 10000; // 10k Cr
+    const savingsPerYear = 12000; // 60k Cr / 5 years = 12k/year approx simplification
+
+    // Calculate Balance
+    const totalSavings = savingsPerYear * years;
+    const net = totalSavings - upfrontCost;
+
+    // Rotation logic: -20deg (Heavily Cost) to +20deg (Heavily Savings)
+    // Clamp between -20 and 20
+    let rotation = (net / 20000) * 10;
+    if (rotation > 20) rotation = 20;
+    if (rotation < -20) rotation = -20;
+
     return (
         <div className="bg-card border rounded-3xl p-8 text-center space-y-8">
-            <h3 className="text-2xl font-bold">Investment vs. Savings</h3>
+            <h3 className="text-2xl font-bold">Investment vs. Savings Simulator</h3>
             <p className="text-muted-foreground max-w-lg mx-auto">
-                ONOE requires a massive upfront investment in new EVMs, but saves recurring costs over time.
+                Drag the slider to see how quickly the upfront investment pays off.
             </p>
 
+            {/* Slider */}
+            <div className="max-w-md mx-auto bg-muted/30 p-4 rounded-xl">
+                <div className="flex justify-between text-sm font-bold mb-2">
+                    <span>Year 1</span>
+                    <span className="text-primary text-xl">Year {years}</span>
+                    <span>Year 10</span>
+                </div>
+                <input
+                    type="range"
+                    min="1"
+                    max="10"
+                    step="0.5"
+                    value={years}
+                    onChange={(e) => setYears(parseFloat(e.target.value))}
+                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-primary"
+                />
+            </div>
+
             <div className="relative h-64 flex items-end justify-center gap-20">
-                {/* Left Pan: Investment */}
-                <div className="flex flex-col items-center gap-2 relative top-10">
-                    <div className="w-32 h-32 bg-red-100 rounded-lg flex items-center justify-center border-2 border-red-500 shadow-xl transform rotate-3">
+                {/* Left Pan: Investment (Fixed Weight) */}
+                <div
+                    className="flex flex-col items-center gap-2 relative transition-all duration-500 ease-out"
+                    style={{ transform: `translateY(${rotation * -2}px)` }}
+                >
+                    <div className="w-32 h-32 bg-red-100 rounded-lg flex items-center justify-center border-2 border-red-500 shadow-xl relative z-10">
                         <div className="text-center">
                             <div className="text-xs font-bold text-red-600 uppercase">Upfront Cost</div>
-                            <div className="text-xl font-black text-red-800">₹ 10k Cr</div>
+                            <div className="text-xl font-black text-red-800">₹ {upfrontCost.toLocaleString()} Cr</div>
                             <div className="text-[10px] text-red-600/80">(New EVMs)</div>
                         </div>
                     </div>
-                    <div className="w-1 bg-foreground/20 h-20"></div>
+                    {/* String */}
+                    <div className="w-1 bg-foreground/20 h-32 absolute bottom-20 -z-0"></div>
                 </div>
 
-                {/* Pivot */}
-                <div className="absolute bottom-0 w-8 h-8 bg-foreground rounded-full z-10"></div>
-                <div className="absolute bottom-4 w-64 h-2 bg-foreground/50 rounded-full transform -rotate-6"></div>
+                {/* Pivot Stand */}
+                <div className="absolute bottom-0 flex flex-col items-center justify-end h-full w-full pointer-events-none z-0">
+                    {/* Horizontal Beam */}
+                    <div
+                        className="w-80 h-3 bg-slate-800 rounded-full transition-all duration-500 ease-out origin-center relative bottom-52"
+                        style={{ transform: `rotate(${rotation}deg)` }}
+                    ></div>
 
-                {/* Right Pan: Savings */}
-                <div className="flex flex-col items-center gap-2 relative bottom-10">
-                    <div className="w-40 h-40 bg-green-100 rounded-full flex items-center justify-center border-2 border-green-500 shadow-xl transform -rotate-3">
+                    {/* Central Stand */}
+                    <div className="w-2 h-52 bg-slate-400 absolute bottom-0"></div>
+                    <div className="w-8 h-8 bg-slate-800 rounded-full absolute bottom-48 z-20 shadow-md"></div>
+                    <div className="w-24 h-4 bg-slate-300 rounded-full absolute bottom-0"></div>
+                </div>
+
+                {/* Right Pan: Savings (Variable Weight) */}
+                <div
+                    className="flex flex-col items-center gap-2 relative transition-all duration-500 ease-out"
+                    style={{ transform: `translateY(${rotation * 2}px)` }} // Opposite movement
+                >
+                    <div className="w-32 h-32 bg-green-100 rounded-full flex items-center justify-center border-2 border-green-500 shadow-xl relative z-10 transition-all duration-300"
+                        style={{ transform: `scale(${0.8 + (years * 0.05)})` }} // Gets bigger
+                    >
                         <div className="text-center">
-                            <div className="text-xs font-bold text-green-600 uppercase">Recurring Savings</div>
-                            <div className="text-2xl font-black text-green-800">₹ 60k Cr</div>
-                            <div className="text-[10px] text-green-600/80">(Every 5 Years)</div>
+                            <div className="text-xs font-bold text-green-600 uppercase">Savings</div>
+                            <div className="text-xl font-black text-green-800">₹ {totalSavings.toLocaleString()} Cr</div>
+                            <div className="text-[10px] text-green-600/80">(@ Year {years})</div>
                         </div>
                     </div>
-                    <div className="w-1 bg-foreground/20 h-20"></div>
+                    {/* String */}
+                    <div className="w-1 bg-foreground/20 h-32 absolute bottom-20 -z-0"></div>
                 </div>
             </div>
 
-            <div className="p-4 bg-muted/50 rounded-xl max-w-md mx-auto text-sm">
-                ℹ️ <b>ROI Analysis:</b> The upfront cost of purchasing VVPATs is recovered within the first election cycle due to massive savings in logistics and security deployment.
+            <div className={`p-4 rounded-xl max-w-md mx-auto text-sm font-bold transition-colors ${net > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                Result: {net > 0 ? `PROFIT: ₹ ${net.toLocaleString()} Cr` : `DEFICIT: -₹ ${Math.abs(net).toLocaleString()} Cr`}
             </div>
         </div>
     );
