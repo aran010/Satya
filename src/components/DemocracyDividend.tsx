@@ -79,20 +79,29 @@ export function DemocracyDividend() {
 
 function TaxpayerReceipt() {
     const [income, setIncome] = useState<number | "">("");
-    const [result, setResult] = useState<{ cost: number; days: number } | null>(null);
+    const [result, setResult] = useState<{ currentCost: number; onoeCost: number; savings: number; days: number } | null>(null);
 
     const calculate = () => {
         if (!income || typeof income !== 'number') return;
-        // Logic: Total Election Cost ~ ₹1.35 Lakh Crore (5 years). 
-        // Per Capita Cost ~ ₹1000/year (Simplification for demo).
-        // Proportional to Income Tax Bracket (Progressive Mock).
+
+        // Logic: 
+        // Current System: Frequent elections (Lok Sabha + State Assemblies separately) -> Higher Tax Burden
+        // ONOE: Synchronized -> Lower Logistics/Security Cost (~30-40% savings estimated)
 
         let share = 0;
-        if (income < 500000) share = 500; // Indirect taxes
+        if (income < 500000) share = 500; // Indirect taxes primarily
         else if (income < 1000000) share = 2500;
         else share = 15000;
 
-        setResult({ cost: share, days: Math.floor(share / (income / 365)) });
+        const onoeShare = Math.floor(share * 0.6); // Assuming 40% efficiency savings
+        const savings = share - onoeShare;
+
+        setResult({
+            currentCost: share,
+            onoeCost: onoeShare,
+            savings: savings,
+            days: Math.floor(savings / (income / 365))
+        });
     };
 
     return (
@@ -125,23 +134,34 @@ function TaxpayerReceipt() {
                 <motion.div
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="mt-8 bg-amber-50 dark:bg-amber-950/20 border border-dashed border-amber-300 p-6 rounded-xl font-mono text-amber-900 dark:text-amber-100 relative overflow-hidden"
+                    className="mt-8 space-y-4"
                 >
-                    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-50" />
-                    <h3 className="text-xl font-bold uppercase tracking-widest border-b border-amber-300 pb-2 mb-4 text-center">Taxpayer Receipt</h3>
+                    {/* Receipt Comparison */}
+                    <div className="bg-white dark:bg-slate-900 border border-dashed border-slate-300 p-6 rounded-xl font-mono relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-green-500 opacity-80" />
+                        <h3 className="text-lg font-bold uppercase tracking-widest text-center mb-6">Taxpayer Impact Report</h3>
 
-                    <div className="space-y-3">
-                        <div className="flex justify-between">
-                            <span>Election Cycle Cost:</span>
-                            <span className="font-bold">₹ {result.cost.toLocaleString()}</span>
+                        <div className="grid grid-cols-2 gap-8 text-center">
+                            <div>
+                                <div className="text-xs text-muted-foreground mb-1">Current System</div>
+                                <div className="text-xl font-bold text-red-600">₹ {result.currentCost.toLocaleString()}</div>
+                                <div className="text-[10px] text-red-600/70">High Logistics Cost</div>
+                            </div>
+                            <div>
+                                <div className="text-xs text-muted-foreground mb-1">With ONOE</div>
+                                <div className="text-xl font-bold text-green-600">₹ {result.onoeCost.toLocaleString()}</div>
+                                <div className="text-[10px] text-green-600/70">Efficiency Savings</div>
+                            </div>
                         </div>
-                        <div className="flex justify-between">
-                            <span>Money Locked Duration:</span>
-                            <span className="font-bold">75 Days</span>
+
+                        <div className="mt-6 pt-4 border-t border-dashed flex justify-between items-center bg-green-50 dark:bg-green-900/10 p-2 rounded-lg">
+                            <span className="font-bold text-green-800 dark:text-green-300">YOUR SAVINGS:</span>
+                            <span className="text-2xl font-black text-green-700 dark:text-green-400">₹ {result.savings.toLocaleString()}</span>
                         </div>
-                        <div className="mt-4 pt-4 border-t border-amber-300/50 text-sm italic opacity-80 text-center">
-                            "This is equivalent to {result.days} days of your hard-earned labor."
-                        </div>
+                    </div>
+
+                    <div className="text-center text-sm italic text-muted-foreground">
+                        "With these savings, you get back ~{result.days} days worth of your labor's value."
                     </div>
                 </motion.div>
             )}
