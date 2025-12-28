@@ -194,7 +194,7 @@ export default function Home() {
                 : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
                 }`}
             >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)} {tab === 'game' && '🎮'} {tab === 'dividend' && '💸'}
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
           ))}
         </div>
