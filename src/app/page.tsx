@@ -10,9 +10,10 @@ import { StatsCard } from "@/components/StatsCard";
 import { ViralWatch } from "@/components/ViralWatch";
 import { RecentCheckResult } from "@/components/RecentCheckResult";
 import { VerificationTabs } from "@/components/VerificationTabs";
+import { ElectionNews } from "@/components/ElectionNews";
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<'rumor' | 'logic' | 'deepfake' | 'game' | 'dividend'>('rumor');
+  const [activeTab, setActiveTab] = useState<'rumor' | 'logic' | 'deepfake' | 'game' | 'dividend' | 'news'>('rumor');
 
   // Rumor Buster State
   const [query, setQuery] = useState("");
@@ -185,7 +186,7 @@ export default function Home() {
 
         {/* Navigation Tabs (Top Level) */}
         <div className="flex flex-wrap gap-2 md:gap-4 mb-8">
-          {['rumor', 'logic', 'deepfake', 'game', 'dividend'].map((tab) => (
+          {['rumor', 'logic', 'deepfake', 'game', 'dividend', 'news'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab as any)}
@@ -199,151 +200,163 @@ export default function Home() {
           ))}
         </div>
 
-        {activeTab === 'rumor' ? (
-          /* Dashboard Layout: 2 Columns */
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {
+          activeTab === 'rumor' ? (
+            /* Dashboard Layout: 2 Columns */
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-            {/* Left Column (Input & Results) */}
-            <div className="lg:col-span-2 space-y-8">
-              <VerificationTabs onVerify={handleVerifyRequest} isAnalyzing={isAnalyzing} />
+              {/* Left Column (Input & Results) */}
+              <div className="lg:col-span-2 space-y-8">
+                <VerificationTabs onVerify={handleVerifyRequest} isAnalyzing={isAnalyzing} />
 
-              <AnimatePresence>
-                {result && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                  >
-                    <RecentCheckResult result={result} />
-                    {/* Optional: Show detailed breakdown below or inside result card */}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* Right Column (Stats & Trends) */}
-            <div className="space-y-6">
-              <StatsCard />
-              <ViralWatch />
-
-              {/* Browser Extension Banner */}
-              <div className="bg-slate-100 border border-slate-200 rounded-2xl p-4 flex items-center justify-between shadow-sm">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-600 rounded-lg text-white">
-                    <Puzzle className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-sm text-slate-900">Browser Extension</h4>
-                    <p className="text-xs text-slate-500">Verify news without leaving WhatsApp Web.</p>
-                  </div>
-                </div>
-                <a href="/satya-extension.zip" download className="bg-white border text-sm font-bold px-4 py-1.5 rounded-lg shadow-sm hover:bg-slate-50 transition-colors">
-                  Get
-                </a>
+                <AnimatePresence>
+                  {result && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                    >
+                      <RecentCheckResult result={result} />
+                      {/* Optional: Show detailed breakdown below or inside result card */}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            </div>
 
-          </div>
-        ) : activeTab === 'logic' ? (
-          <motion.div
-            /* Existing Logic UI retained */
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            key="logic"
-            className="w-full max-w-4xl mx-auto space-y-6"
-          >
-            {/* Logic UI Content */}
-            <div className="bg-card border shadow-lg rounded-2xl p-6">
-              <h2 className="text-2xl font-bold mb-2">Constitutional Logic Layer</h2>
-              <p className="text-muted-foreground mb-4">
-                Powered by "Veil of Ignorance". Provides symmetrical arguments grounded in the Constitution.
-              </p>
-              <div className="flex gap-2">
-                <textarea
-                  value={logicQuery}
-                  onChange={(e) => setLogicQuery(e.target.value)}
-                  placeholder="Ask about ONOE, Article 83, or Election Reforms..."
-                  className="flex-1 min-h-[80px] px-4 py-3 bg-muted/50 border rounded-xl focus:ring-2 focus:ring-primary focus:outline-none resize-none"
-                />
-                <button
-                  onClick={handleLogicSubmit}
-                  disabled={isAnalyzing || !logicQuery.trim()}
-                  className="bg-primary text-primary-foreground px-6 rounded-xl font-semibold hover:opacity-90 transition-all disabled:opacity-50 h-auto"
-                >
-                  {isAnalyzing ? <Loader2 className="animate-spin" /> : "Analyze"}
-                </button>
-              </div>
-            </div>
+              {/* Right Column (Stats & Trends) */}
+              <div className="space-y-6">
+                <StatsCard />
+                <ViralWatch />
 
-            {logicResult && (
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-green-50/50 dark:bg-green-900/10 border border-green-200 dark:border-green-800 p-6 rounded-2xl">
-                  <h3 className="font-bold text-green-700 dark:text-green-300 text-lg mb-2 flex items-center gap-2">
-                    <ShieldCheck className="w-5 h-5" /> Government Rationale
-                  </h3>
-                  <p className="text-foreground/90 leading-relaxed whitespace-pre-wrap">{logicResult.pro_argument}</p>
-                </div>
-
-                <div className="bg-orange-50/50 dark:bg-orange-900/10 border border-orange-200 dark:border-orange-800 p-6 rounded-2xl">
-                  <h3 className="font-bold text-orange-700 dark:text-orange-300 text-lg mb-2 flex items-center gap-2">
-                    <Search className="w-5 h-5" /> Opposition Concerns
-                  </h3>
-                  <p className="text-foreground/90 leading-relaxed whitespace-pre-wrap">{logicResult.con_argument}</p>
-                </div>
-
-                <div className="col-span-1 md:col-span-2 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800 p-6 rounded-2xl">
-                  <h3 className="font-bold text-blue-700 dark:text-blue-300 text-lg mb-2">Neutral Summation</h3>
-                  <p className="text-foreground/90 whitespace-pre-wrap">{logicResult.neutral_summation}</p>
-
-                  <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-800">
-                    <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-2">Citations</p>
-                    <div className="flex flex-wrap gap-2">
-                      {logicResult.citations?.map((cite: string, i: number) => (
-                        <span key={i} className="text-xs bg-background border px-2 py-1 rounded-md text-muted-foreground">
-                          {cite}
-                        </span>
-                      ))}
+                {/* Browser Extension Banner */}
+                <div className="bg-slate-100 border border-slate-200 rounded-2xl p-4 flex items-center justify-between shadow-sm">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-600 rounded-lg text-white">
+                      <Puzzle className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm text-slate-900">Browser Extension</h4>
+                      <p className="text-xs text-slate-500">Verify news without leaving WhatsApp Web.</p>
                     </div>
                   </div>
+                  <a href="/satya-extension.zip" download className="bg-white border text-sm font-bold px-4 py-1.5 rounded-lg shadow-sm hover:bg-slate-50 transition-colors">
+                    Get
+                  </a>
                 </div>
-              </motion.div>
-            )}
-          </motion.div>
-        ) : activeTab === 'deepfake' ? (
-          /* Deepfake Detective UI */
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            key="deepfake"
-            className="w-full max-w-3xl mx-auto space-y-6"
-          >
-            <DeepfakeUploader />
-          </motion.div>
-        ) : activeTab === 'game' ? (
-          /* Constitutional Game */
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            key="game"
-            className="w-full"
-          >
-            <ConstitutionalGame />
-          </motion.div>
-        ) : activeTab === 'dividend' ? (
-          /* Democracy Dividend */
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            key="dividend"
-            className="w-full"
-          >
-            <DemocracyDividend />
-          </motion.div>
-        ) : null}
-      </section>
+              </div>
+
+            </div>
+          ) : activeTab === 'logic' ? (
+            <motion.div
+              /* Existing Logic UI retained */
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              key="logic"
+              className="w-full max-w-4xl mx-auto space-y-6"
+            >
+              {/* Logic UI Content */}
+              <div className="bg-card border shadow-lg rounded-2xl p-6">
+                <h2 className="text-2xl font-bold mb-2">Constitutional Logic Layer</h2>
+                <p className="text-muted-foreground mb-4">
+                  Powered by "Veil of Ignorance". Provides symmetrical arguments grounded in the Constitution.
+                </p>
+                <div className="flex gap-2">
+                  <textarea
+                    value={logicQuery}
+                    onChange={(e) => setLogicQuery(e.target.value)}
+                    placeholder="Ask about ONOE, Article 83, or Election Reforms..."
+                    className="flex-1 min-h-[80px] px-4 py-3 bg-muted/50 border rounded-xl focus:ring-2 focus:ring-primary focus:outline-none resize-none"
+                  />
+                  <button
+                    onClick={handleLogicSubmit}
+                    disabled={isAnalyzing || !logicQuery.trim()}
+                    className="bg-primary text-primary-foreground px-6 rounded-xl font-semibold hover:opacity-90 transition-all disabled:opacity-50 h-auto"
+                  >
+                    {isAnalyzing ? <Loader2 className="animate-spin" /> : "Analyze"}
+                  </button>
+                </div>
+              </div>
+
+              {logicResult && (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-green-50/50 dark:bg-green-900/10 border border-green-200 dark:border-green-800 p-6 rounded-2xl">
+                    <h3 className="font-bold text-green-700 dark:text-green-300 text-lg mb-2 flex items-center gap-2">
+                      <ShieldCheck className="w-5 h-5" /> Government Rationale
+                    </h3>
+                    <p className="text-foreground/90 leading-relaxed whitespace-pre-wrap">{logicResult.pro_argument}</p>
+                  </div>
+
+                  <div className="bg-orange-50/50 dark:bg-orange-900/10 border border-orange-200 dark:border-orange-800 p-6 rounded-2xl">
+                    <h3 className="font-bold text-orange-700 dark:text-orange-300 text-lg mb-2 flex items-center gap-2">
+                      <Search className="w-5 h-5" /> Opposition Concerns
+                    </h3>
+                    <p className="text-foreground/90 leading-relaxed whitespace-pre-wrap">{logicResult.con_argument}</p>
+                  </div>
+
+                  <div className="col-span-1 md:col-span-2 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800 p-6 rounded-2xl">
+                    <h3 className="font-bold text-blue-700 dark:text-blue-300 text-lg mb-2">Neutral Summation</h3>
+                    <p className="text-foreground/90 whitespace-pre-wrap">{logicResult.neutral_summation}</p>
+
+                    <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-800">
+                      <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-2">Citations</p>
+                      <div className="flex flex-wrap gap-2">
+                        {logicResult.citations?.map((cite: string, i: number) => (
+                          <span key={i} className="text-xs bg-background border px-2 py-1 rounded-md text-muted-foreground">
+                            {cite}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </motion.div>
+          ) : activeTab === 'deepfake' ? (
+            /* Deepfake Detective UI */
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              key="deepfake"
+              className="w-full max-w-3xl mx-auto space-y-6"
+            >
+              <DeepfakeUploader />
+            </motion.div>
+          ) : activeTab === 'game' ? (
+            /* Constitutional Game */
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              key="game"
+              className="w-full"
+            >
+              <ConstitutionalGame />
+            </motion.div>
+          ) : activeTab === 'dividend' ? (
+            /* Democracy Dividend */
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              key="dividend"
+              className="w-full"
+            >
+              <DemocracyDividend />
+            </motion.div>
+          ) : activeTab === 'news' ? (
+            /* Election News */
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              key="news"
+              className="w-full"
+            >
+              <ElectionNews />
+            </motion.div>
+          ) : null
+        }
+      </section >
 
       {/* Feature Grid removed or moved to bottom if needed, currently removing to match clean dashboard look or keeping minimal */}
 
-    </main>
+    </main >
   );
 }
 
