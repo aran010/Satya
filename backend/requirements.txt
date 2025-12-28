@@ -12,3 +12,5 @@ opencv-python-headless
 facenet-pytorch
 numpy
 pillow
+python-multipart
+torchvision

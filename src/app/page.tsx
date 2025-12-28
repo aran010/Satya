@@ -2,10 +2,14 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShieldCheck, Search, FileText, Globe, Loader2, Clipboard as ClipboardIcon, Mic, FileVideo, Landmark } from "lucide-react";
+import { ShieldCheck, Search, FileText, Globe, Loader2, Clipboard as ClipboardIcon, Mic, FileVideo, Landmark, Puzzle } from "lucide-react";
 import { RumorAnalysis } from "@/components/RumorAnalysis";
 import { ConstitutionalGame } from "@/components/ConstitutionalGame";
 import { DemocracyDividend } from "@/components/DemocracyDividend";
+import { StatsCard } from "@/components/StatsCard";
+import { ViralWatch } from "@/components/ViralWatch";
+import { RecentCheckResult } from "@/components/RecentCheckResult";
+import { VerificationTabs } from "@/components/VerificationTabs";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'rumor' | 'logic' | 'deepfake' | 'game' | 'dividend'>('rumor');
@@ -23,29 +27,49 @@ export default function Home() {
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
 
-  const handleVerify = async () => {
-    if (!query.trim()) return;
+  /* New Verify Handler */
+  const handleVerifyRequest = async (type: 'text' | 'image' | 'url', content: string | File) => {
     setIsAnalyzing(true);
     setResult(null);
     try {
       const API_URL = process.env.NODE_ENV === "development"
         ? "http://localhost:8000"
         : (process.env.NEXT_PUBLIC_API_URL ?? "");
-      const response = await fetch(`${API_URL}/analyze`, {
+
+      let endpoint = "/analyze";
+      let body: any;
+      let headers: any = { "Content-Type": "application/json" };
+
+      if (type === 'text' || type === 'url') {
+        body = JSON.stringify({ text: content });
+      } else if (type === 'image') {
+        endpoint = "/analyze-image";
+        const formData = new FormData();
+        formData.append("file", content as File);
+        body = formData;
+        headers = {}; // Let browser set boundary
+      }
+
+      const response = await fetch(`${API_URL}${endpoint}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: query }),
+        headers,
+        body,
       });
+
       if (!response.ok) throw new Error("Analysis failed");
       const data = await response.json();
       setResult(data);
+
     } catch (error) {
-      console.error("Error verifying rumor:", error);
-      alert("Could not connect to the Rumor Buster AI. Make sure the backend is running.");
+      console.error("Error verifying:", error);
+      alert("Verification failed. Please check backend connection.");
     } finally {
       setIsAnalyzing(false);
     }
   };
+
+  /* Deprecated legacy handleVerify - keeping just in case but usually safely remove in full cleanup */
+  const handleVerify = async () => { handleVerifyRequest('text', query) };
 
   const startRecording = async () => {
     try {
@@ -139,114 +163,85 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center pb-20">
-      <section className="w-full max-w-5xl px-6 pt-24 pb-12 text-center space-y-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary text-secondary-foreground text-sm font-medium mb-4">
-            <ShieldCheck className="w-4 h-4" />
-            <span>Hyper-Local Rumor Buster</span>
-          </div>
-          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-4">
-            Verify. <span className="text-gradient">Explain.</span> Trust.
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            Combating misinformation in regional languages with AI-powered explainability.
-            Instantly check rumors against official records.
-          </p>
-        </motion.div>
+    <main className="min-h-screen flex flex-col items-center pb-20 bg-gray-50 dark:bg-background transition-colors">
+      <section className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 pb-12 space-y-6">
 
-        {/* Navigation Tabs */}
-        <div className="flex gap-4 mb-8 justify-center">
-          <button
-            onClick={() => setActiveTab('rumor')}
-            className={`px-6 py-2 rounded-full font-semibold transition-all ${activeTab === 'rumor' ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}
-          >
-            Rumor Buster
-          </button>
-          <button
-            onClick={() => setActiveTab('logic')}
-            className={`px-6 py-2 rounded-full font-semibold transition-all ${activeTab === 'logic' ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}
-          >
-            Constitutional Logic Layer
-          </button>
-          <button
-            onClick={() => setActiveTab('deepfake')}
-            className={`px-6 py-2 rounded-full font-semibold transition-all ${activeTab === 'deepfake' ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}
-          >
-            Deepfake Detective
-          </button>
-          <button
-            onClick={() => setActiveTab('game')}
-            className={`px-6 py-2 rounded-full font-semibold transition-all ${activeTab === 'game' ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}
-          >
-            Start Game 🎮
-          </button>
-          <button
-            onClick={() => setActiveTab('dividend')}
-            className={`px-6 py-2 rounded-full font-semibold transition-all ${activeTab === 'dividend' ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}
-          >
-            Democracy Dividend 💸
-          </button>
+        {/* Header Section */}
+        <div className="text-left mb-8 md:mb-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wider mb-4 border border-blue-200">
+            <ShieldCheck className="w-3 h-3" /> Official Election Fact-Checker
+          </div>
+          <h1 className="text-4xl md:text-6xl font-serif font-bold text-slate-900 dark:text-slate-100 mb-4 tracking-tight">
+            Don't Forward without <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-indigo-600">Checking.</span>
+          </h1>
+          <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed">
+            Paste messages directly from WhatsApp Web or upload screenshots to verify election news instantly with our AI-powered engine.
+          </p>
+        </div>
+
+        {/* Navigation Tabs (Top Level) */}
+        <div className="flex flex-wrap gap-2 md:gap-4 mb-8">
+          {['rumor', 'logic', 'deepfake', 'game', 'dividend'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab as any)}
+              className={`px-5 py-2 rounded-full font-semibold transition-all text-sm md:text-base ${activeTab === tab
+                ? 'bg-slate-900 text-white shadow-md'
+                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                }`}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)} {tab === 'game' && '🎮'} {tab === 'dividend' && '💸'}
+            </button>
+          ))}
         </div>
 
         {activeTab === 'rumor' ? (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            key="rumor"
-            className="w-full max-w-2xl mx-auto bg-card border shadow-lg rounded-2xl p-6 relative z-10"
-          >
-            <div className="flex flex-col gap-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground" />
-                <textarea
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Paste a forwarded message or rumor here (Hindi, Bhojpuri, English...)"
-                  className="w-full min-h-[120px] pl-10 pr-4 py-3 bg-muted/50 border rounded-xl focus:ring-2 focus:ring-primary focus:outline-none resize-none text-base transition-all"
-                />
-              </div>
+          /* Dashboard Layout: 2 Columns */
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-              <div className="flex justify-between items-center">
-                <div className="flex gap-2">
-                  <button
-                    onClick={toggleRecording}
-                    className={`p-2 rounded-full transition-colors flex items-center justify-center ${isRecording ? 'bg-red-100 text-red-600 animate-pulse' : 'hover:bg-muted text-muted-foreground'}`}
-                    title={isRecording ? "Stop Recording" : "Start Voice Conversation"}
+            {/* Left Column (Input & Results) */}
+            <div className="lg:col-span-2 space-y-8">
+              <VerificationTabs onVerify={handleVerifyRequest} isAnalyzing={isAnalyzing} />
+
+              <AnimatePresence>
+                {result && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
                   >
-                    <Mic className={`w-5 h-5 ${isRecording ? 'text-red-600' : ''}`} />
-                  </button>
-                  <button
-                    onClick={handlePaste}
-                    className="p-2 hover:bg-muted rounded-full transition-colors"
-                    title="Paste from Clipboard"
-                  >
-                    <ClipboardIcon className="w-5 h-5 text-muted-foreground" />
-                  </button>
+                    <RecentCheckResult result={result} />
+                    {/* Optional: Show detailed breakdown below or inside result card */}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Right Column (Stats & Trends) */}
+            <div className="space-y-6">
+              <StatsCard />
+              <ViralWatch />
+
+              {/* Browser Extension Banner */}
+              <div className="bg-slate-100 border border-slate-200 rounded-2xl p-4 flex items-center justify-between shadow-sm">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-600 rounded-lg text-white">
+                    <Puzzle className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-slate-900">Browser Extension</h4>
+                    <p className="text-xs text-slate-500">Verify news without leaving WhatsApp Web.</p>
+                  </div>
                 </div>
-                <button
-                  onClick={handleVerify}
-                  disabled={isAnalyzing || !query.trim()}
-                  className="bg-primary text-primary-foreground px-6 py-2 rounded-xl font-semibold hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                >
-                  {isAnalyzing ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Verifying...
-                    </>
-                  ) : (
-                    "Verify Rumor"
-                  )}
+                <button className="bg-white border text-sm font-bold px-4 py-1.5 rounded-lg shadow-sm hover:bg-slate-50">
+                  Get
                 </button>
               </div>
             </div>
-          </motion.div>
+
+          </div>
         ) : activeTab === 'logic' ? (
           <motion.div
+            /* Existing Logic UI retained */
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             key="logic"
@@ -342,33 +337,8 @@ export default function Home() {
         ) : null}
       </section>
 
-      {/* Analysis Result */}
-      <AnimatePresence>
-        {result && activeTab === 'rumor' && (
-          <section className="w-full max-w-5xl px-6 flex justify-center mb-16">
-            <RumorAnalysis result={result} />
-          </section>
-        )}
-      </AnimatePresence>
+      {/* Feature Grid removed or moved to bottom if needed, currently removing to match clean dashboard look or keeping minimal */}
 
-      {/* Feature Grid */}
-      <section className="w-full max-w-5xl px-6 py-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <FeatureCard
-          icon={<Globe className="w-8 h-8 text-primary" />}
-          title="Multilingual AI"
-          description="Understand nuances in Bhojpuri, Magahi, and 22+ scheduled languages using IndicBERT."
-        />
-        <FeatureCard
-          icon={<Search className="w-8 h-8 text-purple-600" />}
-          title="Explainable Insights"
-          description="Don't just know it's fake. See exactly which words triggered the alert with SHAP analysis."
-        />
-        <FeatureCard
-          icon={<FileText className="w-8 h-8 text-green-600" />}
-          title="Official Context"
-          description="Get direct links to the Kovind Committee Report and Constitution sections that refute logical fallacies."
-        />
-      </section>
     </main>
   );
 }

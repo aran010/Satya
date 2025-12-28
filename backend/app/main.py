@@ -13,7 +13,10 @@ from pydantic import BaseModel
 from typing import List, Optional
 import google.generativeai as genai
 from dotenv import load_dotenv
-from deepfake_detection import DeepfakeDetector
+try:
+    from deepfake_detection import DeepfakeDetector
+except ImportError:
+    from .deepfake_detection import DeepfakeDetector
 import shutil
 
 load_dotenv() # Load environment variables from .env file
@@ -329,6 +332,65 @@ async def chat_constitutional(request: ConstitutionalRequest):
             neutral_summation="Please try again.",
             citations=[]
         )
+
+@app.post("/analyze-image", response_model=AnalyzeResponse)
+async def analyze_image(file: UploadFile = File(...)):
+    print(f"Analyzing Image: {file.filename}")
+    
+    suffix = f".{file.filename.split('.')[-1]}" if "." in file.filename else ".jpg"
+    with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+        tmp.write(await file.read())
+        tmp_path = tmp.name
+
+    try:
+        if not API_KEY:
+             raise HTTPException(status_code=500, detail="Gemini API Key missing")
+
+        # Upload to Gemini
+        gemini_file = genai.upload_file(tmp_path, mime_type=file.content_type or "image/jpeg")
+        
+        # Prompt
+        response = model.generate_content(["Verify the claim or news presented in this image.", gemini_file])
+        
+        # Parse output
+        response_text = response.text
+        if response_text.startswith("```json"):
+            response_text = response_text[7:-3]
+        elif response_text.startswith("```"):
+             response_text = response_text[3:-3]
+            
+        data = json.loads(response_text)
+        
+        return AnalyzeResponse(
+            isFake=data.get("isFake", False),
+            confidence=data.get("confidence", 0.0),
+            originalText="[Image Analysis]",
+            explanation=Explanation(
+                highlightedWords=data.get("explanation", {}).get("highlightedWords", []),
+                reason=data.get("explanation", {}).get("reason", "No explanation provided.")
+            ),
+            contextLinks=[
+                ContextLink(
+                    title=link.get("title", "Source"),
+                    excerpt=link.get("excerpt", ""),
+                    url=link.get("url", "#")
+                ) for link in data.get("contextLinks", [])
+            ]
+        )
+
+    except Exception as e:
+        print(f"Image Analysis Error: {e}")
+        return AnalyzeResponse(
+            isFake=False,
+            confidence=0.0,
+            originalText="[Error]",
+            explanation=Explanation(highlightedWords=[], reason="Error analyzing image."),
+            contextLinks=[]
+        )
+
+    finally:
+        if os.path.exists(tmp_path):
+            os.remove(tmp_path)
 
 if __name__ == "__main__":
     import uvicorn
