@@ -236,9 +236,9 @@ export default function Home() {
                     <p className="text-xs text-slate-500">Verify news without leaving WhatsApp Web.</p>
                   </div>
                 </div>
-                <button className="bg-white border text-sm font-bold px-4 py-1.5 rounded-lg shadow-sm hover:bg-slate-50">
+                <a href="/satya-extension.zip" download className="bg-white border text-sm font-bold px-4 py-1.5 rounded-lg shadow-sm hover:bg-slate-50 transition-colors">
                   Get
-                </button>
+                </a>
               </div>
             </div>
 
