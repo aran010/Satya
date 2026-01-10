@@ -95,7 +95,7 @@ export function VoiceAssistant() {
                 // Add user message (transcribed)
                 const userMessage: Message = {
                     role: "user",
-                    content: data.text_response, // This should be the transcribed text
+                    content: data.text_query,
                     timestamp: new Date(),
                 };
 
@@ -106,7 +106,7 @@ export function VoiceAssistant() {
                     timestamp: new Date(),
                 };
 
-                setMessages((prev) => [...prev, assistantMessage]);
+                setMessages((prev) => [...prev, userMessage, assistantMessage]);
                 setDetectedLanguage(data.detected_language);
 
                 // Play audio response
@@ -166,8 +166,8 @@ export function VoiceAssistant() {
                         onClick={isRecording ? stopRecording : startRecording}
                         disabled={isProcessing || isSpeaking}
                         className={`relative w-32 h-32 rounded-full flex items-center justify-center transition-all ${isRecording
-                                ? "bg-red-500 hover:bg-red-600 shadow-lg shadow-red-500/50"
-                                : "bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/50"
+                            ? "bg-red-500 hover:bg-red-600 shadow-lg shadow-red-500/50"
+                            : "bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/50"
                             } ${isProcessing || isSpeaking ? "opacity-50 cursor-not-allowed" : ""}`}
                         whileTap={{ scale: 0.95 }}
                         animate={isRecording ? { scale: [1, 1.05, 1] } : {}}
@@ -238,8 +238,8 @@ export function VoiceAssistant() {
                                 >
                                     <div
                                         className={`max-w-[80%] px-4 py-3 rounded-2xl ${message.role === "user"
-                                                ? "bg-blue-600 text-white"
-                                                : "bg-slate-100 text-slate-900"
+                                            ? "bg-blue-600 text-white"
+                                            : "bg-slate-100 text-slate-900"
                                             }`}
                                     >
                                         <p className="text-sm leading-relaxed">{message.content}</p>
