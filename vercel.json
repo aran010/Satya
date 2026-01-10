@@ -1,24 +1,20 @@
+# Vercel Configuration
+# This tells Vercel to NOT deploy the backend API
+# The frontend will point to Hugging Face Space for all API calls
+
 {
-    "rewrites": [
-        {
-            "source": "/analyze",
-            "destination": "/api/index.py"
-        },
-        {
-            "source": "/chat-audio",
-            "destination": "/api/index.py"
-        },
-        {
-            "source": "/detect-deepfake",
-            "destination": "/api/index.py"
-        },
-        {
-            "source": "/chat-constitutional",
-            "destination": "/api/index.py"
-        },
-        {
-            "source": "/api/(.*)",
-            "destination": "/api/index.py"
+    "buildCommand": "npm run build",
+    "outputDirectory": ".next",
+    "devCommand": "npm run dev",
+    "installCommand": "npm install",
+    "framework": "nextjs",
+    "functions": {
+        "api/**/*.py": {
+            "runtime": "python3.9",
+            "maxDuration": 10,
+            "memory": 1024,
+            "includeFiles": "api/**"
         }
-    ]
+    },
+    "ignoreCommand": "if [ -d api ]; then exit 1; else exit 0; fi"
 }
