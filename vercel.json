@@ -1,7 +1,3 @@
-# Vercel Configuration
-# This tells Vercel to NOT deploy the backend API
-# The frontend will point to Hugging Face Space for all API calls
-
 {
     "buildCommand": "npm run build",
     "outputDirectory": ".next",
