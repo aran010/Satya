@@ -105,7 +105,7 @@ export function ConstitutionalGame() {
     };
 
     const MetricCard = ({ label, value, icon, color }: { label: string, value: number, icon: any, color: string }) => (
-        <div className={`p-4 rounded-xl border bg-card/50 flex flex-col items-center gap-2 ${color}`}>
+        <div className={`p-4 rounded-none border bg-card/50 flex flex-col items-center gap-2 ${color}`}>
             <div className="p-3 rounded-full bg-background/50 shadow-sm">{icon}</div>
             <div className="text-center">
                 <p className="text-xs font-semibold text-muted-foreground uppercase">{label}</p>
@@ -164,7 +164,7 @@ export function ConstitutionalGame() {
                         <button
                             key={opt.id}
                             onClick={() => startGame(opt.id as ElectionModel)}
-                            className="flex flex-col text-left p-6 rounded-2xl border-2 hover:border-primary hover:bg-muted/50 transition-all group"
+                            className="flex flex-col text-left p-6 rounded-none border-2 hover:border-primary hover:bg-muted/50 transition-all group"
                         >
                             <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">{opt.title}</h3>
                             <p className="text-sm text-muted-foreground mb-4">{opt.desc}</p>
@@ -193,7 +193,7 @@ export function ConstitutionalGame() {
                     </div>
 
                     {/* Main Viz Area */}
-                    <div className="relative bg-black/5 dark:bg-white/5 rounded-3xl h-[400px] flex flex-col items-center justify-center border-4 border-double overflow-hidden">
+                    <div className="relative bg-black/5 dark:bg-white/5 rounded-none h-[400px] flex flex-col items-center justify-center border-4 border-double overflow-hidden">
 
                         {/* Year Indicator */}
                         <div className="absolute top-6 right-6 bg-background border px-4 py-2 rounded-full font-mono text-xl font-bold shadow-sm">
@@ -224,7 +224,7 @@ export function ConstitutionalGame() {
                                     animate={{ opacity: 1, scale: 1 }}
                                     className="absolute inset-0 z-10 bg-background/80 backdrop-blur-sm flex items-center justify-center p-6"
                                 >
-                                    <div className="bg-card w-full max-w-lg border-2 shadow-2xl rounded-2xl p-8">
+                                    <div className="bg-card w-full max-w-lg border-2 shadow-2xl rounded-none p-8">
                                         <div className="flex items-center gap-3 mb-4 text-orange-500">
                                             <AlertTriangle className="w-8 h-8" />
                                             <span className="text-sm font-bold tracking-wider uppercase">Crisis Alert • Year {year}</span>
@@ -236,7 +236,7 @@ export function ConstitutionalGame() {
                                                 <button
                                                     key={i}
                                                     onClick={() => handleEventChoice(opt.effect, opt.label)}
-                                                    className="w-full text-left p-4 rounded-xl border bg-muted/50 hover:bg-primary hover:text-primary-foreground transition-all font-medium"
+                                                    className="w-full text-left p-4 rounded-none border bg-muted/50 hover:bg-primary hover:text-primary-foreground transition-all font-medium"
                                                 >
                                                     {opt.label}
                                                 </button>
@@ -252,7 +252,7 @@ export function ConstitutionalGame() {
 
             {/* Phase: END GAME */}
             {phase === "END_GAME" && (
-                <div className="bg-card border-2 shadow-2xl rounded-3xl p-10 text-center max-w-3xl mx-auto space-y-8">
+                <div className="bg-card border-2 shadow-2xl rounded-none p-10 text-center max-w-3xl mx-auto space-y-8">
                     <div>
                         <h2 className="text-3xl font-black mb-2">Simulation Complete</h2>
                         <p className="text-muted-foreground">The Constitutional Impact of your Era</p>

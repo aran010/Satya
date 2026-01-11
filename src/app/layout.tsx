@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Noto_Sans, Mukta } from "next/font/google"; // Import standard Google Fonts
 import "./globals.css";
-import { SatyaHeader } from "@/components/SatyaHeader";
+import { GovHeader } from "@/components/GovHeader";
+import { GovFooter } from "@/components/GovFooter";
+import { AccessibilityControls } from "@/components/AccessibilityControls";
+import { AutoBreadcrumb } from "@/components/AutoBreadcrumb";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 
 const notoSans = Noto_Sans({
@@ -18,7 +21,7 @@ const mukta = Mukta({
 
 export const metadata: Metadata = {
   title: "Satya Verify - Government Fact Check Portal",
-  description: "Official portal to verify news and combat misinformation.",
+  description: "Official portal to verify news and combat misinformation - Government of India",
 };
 
 export default function RootLayout({
@@ -30,8 +33,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${notoSans.variable} ${mukta.variable} font-sans antialiased bg-[#fbfaf9]`}>
         <LanguageProvider>
-          <SatyaHeader />
+          <GovHeader />
+          <AccessibilityControls />
+          <AutoBreadcrumb />
           {children}
+          <GovFooter />
         </LanguageProvider>
       </body>
     </html>

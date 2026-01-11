@@ -20,10 +20,9 @@
   --color-popover-foreground: hsl(var(--popover-foreground));
   --color-card: hsl(var(--card));
   --color-card-foreground: hsl(var(--card-foreground));
-
-  --radius-lg: 0.5rem;
-  --radius-md: calc(0.5rem - 2px);
-  --radius-sm: calc(0.5rem - 4px);
+  --radius-lg: 0px;
+  --radius-md: 0px;
+  --radius-sm: 0px;
 }
 
 @utility text-gradient {
@@ -73,6 +72,137 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 224.3 76.3% 48%;
+  }
+
+  /* Accessibility: Skip to Content Link */
+  .skip-to-content {
+    position: absolute;
+    left: -9999px;
+    z-index: 100;
+    padding: 1em 1.5em;
+    background: #0066CC;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .skip-to-content:focus {
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+  }
+
+  /* Accessibility: Enhanced Focus Indicators */
+  *:focus-visible {
+    outline: 3px solid #0066CC;
+    outline-offset: 2px;
+  }
+
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 3px solid #0066CC;
+    outline-offset: 2px;
+  }
+
+  /* Main content focus (for skip link) */
+  #main-content:focus {
+    outline: none;
+  }
+
+  /* Accessibility: Font Size Controls */
+  body.font-size-small {
+    font-size: 14px;
+  }
+
+  body.font-size-medium {
+    font-size: 16px;
+    /* Default */
+  }
+
+  body.font-size-large {
+    font-size: 18px;
+  }
+
+  body.font-size-xlarge {
+    font-size: 20px;
+  }
+
+  /* Scale headings proportionally */
+  body.font-size-large h1 {
+    font-size: 2.25rem;
+  }
+
+  body.font-size-large h2 {
+    font-size: 1.875rem;
+  }
+
+  body.font-size-large h3 {
+    font-size: 1.5rem;
+  }
+
+  body.font-size-xlarge h1 {
+    font-size: 2.5rem;
+  }
+
+  body.font-size-xlarge h2 {
+    font-size: 2rem;
+  }
+
+  body.font-size-xlarge h3 {
+    font-size: 1.75rem;
+  }
+
+  /* Accessibility: High Contrast Mode */
+  body.high-contrast {
+    background-color: #000000 !important;
+    background-image: none !important;
+    /* Remove bg image in high contrast */
+    color: #FFFFFF !important;
+  }
+
+  body.high-contrast a {
+    color: #FFFF00 !important;
+    text-decoration: underline;
+  }
+
+  body.high-contrast button {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+    border: 2px solid #FFFFFF !important;
+  }
+
+  body.high-contrast button:hover {
+    background-color: #FFFF00 !important;
+    color: #000000 !important;
+    border: 2px solid #FFFFFF !important;
+  }
+
+  body.high-contrast nav,
+  body.high-contrast header,
+  body.high-contrast footer {
+    background-color: #000000 !important;
+    border-color: #FFFFFF !important;
+  }
+
+  body.high-contrast .bg-white,
+  body.high-contrast .bg-gray-50,
+  body.high-contrast .bg-gray-100 {
+    background-color: #1a1a1a !important;
+  }
+
+  body.high-contrast .text-gray-600,
+  body.high-contrast .text-gray-700,
+  body.high-contrast .text-gray-900 {
+    color: #FFFFFF !important;
+  }
+
+  body.high-contrast .border,
+  body.high-contrast .border-gray-200,
+  body.high-contrast .border-gray-300 {
+    border-color: #FFFFFF !important;
   }
 }
 

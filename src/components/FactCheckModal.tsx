@@ -33,7 +33,7 @@ export function FactCheckModal({ isOpen, onClose, result }: FactCheckModalProps)
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
                     >
-                        <div className="bg-white dark:bg-zinc-900 w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl shadow-2xl pointer-events-auto border border-zinc-200 dark:border-zinc-800 flex flex-col">
+                        <div className="bg-white dark:bg-zinc-900 w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-none shadow-2xl pointer-events-auto border border-zinc-200 dark:border-zinc-800 flex flex-col">
 
                             {/* Header */}
                             <div className={`p-6 border-b ${isFake ? 'bg-red-50/50 border-red-100 dark:bg-red-900/10 dark:border-red-900/30' : 'bg-green-50/50 border-green-100 dark:bg-green-900/10 dark:border-green-900/30'} flex justify-between items-start sticky top-0 backdrop-blur-md z-10`}>
@@ -42,7 +42,7 @@ export function FactCheckModal({ isOpen, onClose, result }: FactCheckModalProps)
                                         {isFake ? <ShieldAlert className="w-8 h-8" /> : <ShieldCheck className="w-8 h-8" />}
                                     </div>
                                     <div>
-                                        <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest mb-1 ${isFake ? 'bg-red-200 text-red-800' : 'bg-green-200 text-green-800'}`}>
+                                        <span className={`inline-block px-2 py-0.5 rounded-none text-[10px] font-bold uppercase tracking-widest mb-1 ${isFake ? 'bg-red-200 text-red-800' : 'bg-green-200 text-green-800'}`}>
                                             {isFake ? "Verified False" : "Verified True"}
                                         </span>
                                         <h2 className="text-xl md:text-2xl font-bold leading-tight text-zinc-900 dark:text-zinc-100">
@@ -87,7 +87,7 @@ export function FactCheckModal({ isOpen, onClose, result }: FactCheckModalProps)
                                     </div>
 
                                     {result.originalText && (
-                                        <div className="bg-zinc-50 dark:bg-zinc-800/50 p-4 rounded-xl border border-zinc-100 dark:border-zinc-800">
+                                        <div className="bg-zinc-50 dark:bg-zinc-800/50 p-4 rounded-none border border-zinc-100 dark:border-zinc-800">
                                             <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Original Claim</h4>
                                             <p className="text-sm italic text-zinc-600 dark:text-zinc-400">"{result.originalText}"</p>
                                         </div>
@@ -108,7 +108,7 @@ export function FactCheckModal({ isOpen, onClose, result }: FactCheckModalProps)
                                                     href={link.url}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="block p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-blue-300 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-all group"
+                                                    className="block p-4 rounded-none border border-zinc-200 dark:border-zinc-800 hover:border-blue-300 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-all group"
                                                 >
                                                     <h4 className="font-semibold text-blue-600 dark:text-blue-400 mb-1 group-hover:underline truncate">
                                                         {link.title}

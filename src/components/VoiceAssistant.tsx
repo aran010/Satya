@@ -159,7 +159,7 @@ export function VoiceAssistant() {
             </div>
 
             {/* Voice Control */}
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-8 border-2 border-blue-100">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-none p-8 border-2 border-blue-100">
                 <div className="flex flex-col items-center space-y-6">
                     {/* Microphone Button */}
                     <motion.button
@@ -206,7 +206,7 @@ export function VoiceAssistant() {
 
                     {/* Error Message */}
                     {error && (
-                        <div className="bg-red-100 text-red-700 px-4 py-2 rounded-lg text-sm">
+                        <div className="bg-red-100 text-red-700 px-4 py-2 rounded-none text-sm">
                             {error}
                         </div>
                     )}
@@ -215,7 +215,7 @@ export function VoiceAssistant() {
 
             {/* Conversation History */}
             {messages.length > 0 && (
-                <div className="bg-white rounded-2xl border shadow-sm p-6 space-y-4">
+                <div className="bg-white rounded-none border shadow-sm p-6 space-y-4">
                     <div className="flex justify-between items-center mb-4">
                         <h3 className="text-lg font-bold text-slate-900">Conversation</h3>
                         <button
@@ -237,7 +237,7 @@ export function VoiceAssistant() {
                                         }`}
                                 >
                                     <div
-                                        className={`max-w-[80%] px-4 py-3 rounded-2xl ${message.role === "user"
+                                        className={`max-w-[80%] px-4 py-3 rounded-none ${message.role === "user"
                                             ? "bg-blue-600 text-white"
                                             : "bg-slate-100 text-slate-900"
                                             }`}
@@ -255,7 +255,7 @@ export function VoiceAssistant() {
             )}
 
             {/* Instructions */}
-            <div className="bg-slate-50 rounded-xl p-4 text-sm text-slate-600">
+            <div className="bg-slate-50 rounded-none p-4 text-sm text-slate-600">
                 <p className="font-semibold mb-2">How to use:</p>
                 <ul className="list-disc list-inside space-y-1">
                     <li>Click the microphone to start speaking</li>

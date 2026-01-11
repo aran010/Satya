@@ -2,7 +2,7 @@ import { TrendingUp, Users } from "lucide-react";
 
 export function StatsCard() {
     return (
-        <div className="bg-[#13316c] text-white rounded-3xl p-8 flex flex-col items-center justify-center text-center shadow-md relative overflow-hidden">
+        <div className="bg-[#13316c] text-white rounded-none p-8 flex flex-col items-center justify-center text-center shadow-md relative overflow-hidden">
             {/* Background blobs for aesthetic */}
             <div className="absolute top-0 left-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -translate-x-10 -translate-y-10"></div>
             <div className="absolute bottom-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl translate-x-10 translate-y-10"></div>
